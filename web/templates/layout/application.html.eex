@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A blog for things about games and dev">
+    <meta name="author" content="Brandon Richey">
+
+    <title>Some Blog or Something</title>
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+  </head>
+
+  <body>
+    <div class="container">
+      <nav class="navbar">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">Some Blog or Something</a>
+          </div>
+          <ul class="nav navbar-nav pull-right">
+            <%= if current_user(@conn) do %>
+              <li><p class="navbar-text">Welcome, <strong><%= current_user(@conn).username %></strong></p></li>
+              <li>
+                <%= link "Sign out", to: session_path(@conn, :delete, current_user(@conn)), method: :delete, class: "btn btn-default navbar-btn" %>
+              </li>
+            <% else %>
+              <li>
+                <%= link "Sign In", to: session_path(@conn, :new), class: "btn btn-default navbar-btn" %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </nav>
+
+      <hr>
+
+      <p class="alert alert-info"><%= get_flash(@conn, :info) %></p>
+      <p class="alert alert-danger"><%= get_flash(@conn, :error) %></p>
+
+      <%= @inner %>
+
+    </div> <!-- /container -->
+    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <script>require("web/static/js/app")</script>
+  </body>
+</html>
