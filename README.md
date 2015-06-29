@@ -1,6 +1,7 @@
 ## Step 1: Let's add Posts ##
 
 
+
 	mix phoenix.new pxblog
 		# Y, Y
 	cd pxblog
@@ -407,9 +408,18 @@ Let's make sure the index can find all of the posts from a particular user. Open
 
 	def for_user(user_id) do
 	  posts = from p in Pxblog.Post,
-	          order_by: [desc: p.updated_at],
+	 		   where: p.user_id == ^user_id,
+	          order_by: [desc: p.created_at],
              preload: [:user]
 	end
+
+Let's talk about what we're actually doing here. Ecto models provide us a Linq-style query-writing interface, so we're going to use this here. We're going to set up an alias to our table (from the model) with the `from` keyword.
+
+We're then going to specify the actual criteria to filter our posts on. Here, we're going to filter on the user id, so we specify a `where` criteria. We're using Elixir code here, not SQL, so we need to use `==` in our condition. In addition, we have to specify a ^ on the parameter we're searching for so that we don't end up pattern matching.
+
+Next, we're specifying an order for our posts, since typically with a blog you want the posts that were created most recently first. Order is typically presented as a keyword list, specifying either `asc:` or `desc:` along with the aliased column. (`p` being our alias, `created_at` being our column).
+
+The last piece of this, `preload: [:user]` tells Ecto to preload the associated objects that this query is going to pull in to avoid us performing an N+1 query and instead fetching everything in just a single query. The preload directive takes an array of symbols that need to be associated with the model's associations.
 
 And let's go into our index function in `web/controllers/post_controller.ex` and modify it to do the following:
 
@@ -422,3 +432,140 @@ And let's go into our index function in `web/controllers/post_controller.ex` and
 	end
 
 Hooray! We now have posts visible for the current user! There's zero authentication going on here and we want to be able to view someone else's posts too, but this is a fine start!
+
+### Step 6: Nesting our resources ###
+
+Being able to see our own posts as a user is neat and a good demonstration of our database models and their relationships, but it's not terribly useful in the long run. Let's make our blog a bit more usable by having both a list of all blog posts in general, as well as all blog posts from a particular user.
+
+The good news is that this is actually a pretty easy thing to do in Phoenix. Let's open up `web/router.ex`, and modify our route structure to match as follows:
+
+    scope "/", Pxblog do
+	    pipe_through :browser # Use the default browser stack
+
+	    get "/", PageController, :index
+	    resources "/posts", PostController
+	    resources "/users", UserController do
+	      resources "/posts", PostController
+	    end
+	    resources "/sessions", SessionController, only: [:new, :create, :delete]
+    end
+
+You're probably wondering why we're duplicating ourselves on the listing of our posts resource. The short version is that we want two ways to fetch our posts: all of the posts for a particular author, or all of the posts in general.
+
+Let's change the `index` method to either fetch us all of the posts for a user or all of them total.
+
+In `web/controllers/post_controller.ex`:
+
+	def index(conn, params) do
+   		posts = if params["user_id"] do
+      		params["user_id"]
+      		|> Post.for_user
+      		|> Repo.all
+    	else
+      		Repo.all from p in Post,
+        	order_by: [desc: p.updated_at],
+        	preload: [:user]
+    	end
+    	render(conn, "index.html", posts: posts)
+	end
+
+Finally, let's change the listing on our index page to include the author. Let's open up `web/templates/post/index.html.eex`, and modify our table header to include:
+
+	<th>Author</th>
+
+And modify the table body to include:
+
+    <td><%= link post.user.username, to: user_post_path(@conn, :index, post.user.id) %></td>
+
+This will give us a link to view all posts from a particular author. One issue we still have, however, is that we can attempt to view posts from a completely invalid author, which seems pretty gross. Let's fix that. We'll go back to `web/controllers/post_controller.ex`:
+
+	def index(conn, params) do
+		if params["user_id"] && (!Repo.get User, params["user_id"]) do
+       	conn
+      		|> put_flash(:error, "Invalid user specified!")
+      		|> redirect(to: page_path(conn, :index))
+	    else
+	      posts = if params["user_id"] do
+	        params["user_id"]
+	        |> Post.for_user
+	        |> Repo.all
+	      else
+	        Repo.all from p in Post,
+	          order_by: [desc: p.updated_at],
+	          preload: [:user]
+	      end
+	      render(conn, "index.html", posts: posts)
+	    end
+	end
+
+The biggest addition here is the first condition in the method. If the user_id is set and we cannot find a valid user for that user_id, then we need to send an error message and redirect back to the main index. Simple! And when we go back and test it, we see the error message exactly as we expected to! Awesome!
+
+### Step 7: Refactoring our Controller ###
+
+Our index method in our controller is getting pretty messy. Elixir gives us the ability to deconstruct and pattern match in our functions, and Phoenix is no different, so let's take advantage of this!
+
+	  def index(conn, %{"user_id" => user_id}) do
+	    if Repo.get User, user_id do
+	      posts = user_id
+	      |> Post.for_user
+	      |> Repo.all
+	      render(conn, "index.html", posts: posts)
+	    else
+	      conn
+	      |> put_flash(:error, "Invalid user specified!")
+	      |> redirect(to: page_path(conn, :index))
+	    end
+	  end
+
+	  def index(conn, _params) do
+	    posts = Repo.all from p in Post,
+	      order_by: [desc: p.updated_at],
+	      preload: [:user]
+	    render(conn, "index.html", posts: posts)
+	  end
+
+Our first definition of index will only be hit when we have a user_id in our params list. If we don't, we'll instead skip to the second index definition which is intended for us not having specified a user. Note that we're back to marking params with an underscore in the second definition because it's not necessary anymore.
+
+### Step 8: Authorizing Users with a plug ###
+
+Anyone coming from a Rails background (or any web development background for that matter) is probably cringing at the idea of fetching information out of our session in the middle of our template. Not only that, but this code is not terribly reusable, so let's fix that. Phoenix has a concept of Plugs. A plug is a contract which very simply requires that it accepts a connection object and returns a connection object. So, let's write a plug that will give us simpler access to the current user that we can use in the templates.
+
+Let's create a new file, `lib/pxblog/current_user.ex`:
+
+	defmodule Pxblog.CurrentUser do
+	  import Plug.Conn
+	  import Plug.Session
+
+	  def init(default), do: default
+
+	  def call(conn, _default) do
+	    current_user = get_session(conn, :current_user)
+	    if current_user do
+	      assign(conn, :current_user, current_user)
+	    else
+	      conn
+	    end
+	  end
+	end
+
+We include the Connection Plug to define our standard interface and the Session Plug to access the session. We write an init method that sets default values for options (but in this case doesn't do anything other than return options). Now that we've written our plug, let's...well, plug it in! (Sorry, that will hopefully be the last of those). Let's open up `web/router.ex` and add the following to our Browser Pipeline:
+
+	  pipeline :browser do
+	    plug :accepts, ["html"]
+	    plug :fetch_session
+	    plug :fetch_flash
+	    plug :protect_from_forgery
+	    plug Pxblog.CurrentUser
+	  end
+
+We have a little more work to do. Let's make this accessible to the application's templates. We'll open up `web/views/layout_view.ex` and add the following:
+
+	def current_user(conn) do
+		conn.assigns[:current_user]
+	end
+
+And finally, let's clean up our template a little bit using this new plug. Open up `web/templates/layout/application.html.eex`. Where we set the current user with that icky conn.session stuff, instead we write:
+
+	<% user = current_user(@conn) %>
+
+Now the view can easily grab the current user, and if we need the current user in any controller, we can fetch it from the conn.assigns value under the `:current_user` key.
