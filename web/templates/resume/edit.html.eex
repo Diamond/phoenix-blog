@@ -1,0 +1,6 @@
+<h2>Edit resume</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: resume_path(@conn, :update, @resume) %>
+
+<%= link "Back", to: resume_path(@conn, :index) %>

@@ -3,6 +3,7 @@ defmodule Pxblog.ProjectController do
 
   alias Pxblog.Project
 
+  plug :check_permissions when action in [:new, :create, :edit, :update]
   plug :scrub_params, "project" when action in [:create, :update]
   plug :action
 

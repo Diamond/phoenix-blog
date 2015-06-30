@@ -1,0 +1,12 @@
+<h2>Show resume</h2>
+
+<ul>
+
+  <li>
+    <strong>Body:</strong>
+    <%= @resume.body %>
+  </li>
+
+</ul>
+
+<%= link "Back", to: resume_path(@conn, :index) %>

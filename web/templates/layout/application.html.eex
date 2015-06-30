@@ -35,7 +35,7 @@
       <ul class="nav navbar-nav nav-pills">
         <li><%= link "Archive", to: post_path(@conn, :index) %></li>
         <li><%= link "Projects", to: project_path(@conn, :index) %></li>
-        <li><a href="#">Résumé</a></li>
+        <li><%= link "Résumé", to: resume_path(@conn, :index) %></a></li>
       </ul>
     </div>
     <div class="container-fluid">
