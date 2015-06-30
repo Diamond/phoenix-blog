@@ -1,3 +1,7 @@
-<h2>Login</h2>
+<div class="well">
+  <div class="text-center">
+    <h2>Login</h2>
+  </div>
 
-<%= render "form.html", changeset: @changeset, action: session_path(@conn, :create) %>
+  <%= render "form.html", changeset: @changeset, action: session_path(@conn, :create) %>
+</div>

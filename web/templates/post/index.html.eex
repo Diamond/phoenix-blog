@@ -4,7 +4,7 @@
   <thead>
     <tr>
       <th>Title</th>
-      <th>Body</th>
+      <th>Created On</th>
       <th>Author</th>
       <th></th>
     </tr>
@@ -13,17 +13,23 @@
 <%= for post <- @posts do %>
     <tr>
       <td><%= post.title %></td>
-      <td><%= post.body %></td>
+      <td><%= post.updated_at %></td>
       <td><%= link post.user.username, to: user_post_path(@conn, :index, post.user.id) %></td>
 
       <td class="text-right">
-        <%= link "Show", to: post_path(@conn, :show, post), class: "btn btn-default btn-xs" %>
-        <%= link "Edit", to: post_path(@conn, :edit, post), class: "btn btn-default btn-xs" %>
-        <%= link "Delete", to: post_path(@conn, :delete, post), method: :delete, class: "btn btn-danger btn-xs" %>
+        <%= if @conn.assigns[:current_user] do %>
+          <%= link "Show", to: post_path(@conn, :show, post), class: "btn btn-default btn-xs" %>
+          <%= link "Edit", to: post_path(@conn, :edit, post), class: "btn btn-default btn-xs" %>
+          <%= link "Delete", to: post_path(@conn, :delete, post), method: :delete, class: "btn btn-danger btn-xs" %>
+        <% else %>
+          &nbsp;
+        <% end %>
       </td>
     </tr>
 <% end %>
   </tbody>
 </table>
 
-<%= link "New post", to: post_path(@conn, :new) %>
+<%= if @conn.assigns[:current_user] do %>
+  <%= link "New post", to: post_path(@conn, :new) %>
+<% end %>

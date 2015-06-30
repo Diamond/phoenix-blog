@@ -1,17 +1,21 @@
-<h2>Show post</h2>
-
-<ul>
-
-  <li>
-    <strong>Title:</strong>
-    <%= @post.title %>
-  </li>
-
-  <li>
-    <strong>Body:</strong>
-    <%= @post.body %>
-  </li>
-
-</ul>
-
-<%= link "Back", to: post_path(@conn, :index) %>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+      <p class="lead"><%= @post.title %></p>
+    </div>
+    <div class="col-sm-4">
+      <p><%= @post.user.username %></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-8">
+      <%= raw(Earmark.to_html(@post.body)) %>
+    </div>
+  </div>
+  <br><br>
+  <div class="row">
+    <div class="col-sm-8">
+      <%= link "Back", to: post_path(@conn, :index) %>
+    </div>
+  </div>
+</div>

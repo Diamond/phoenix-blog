@@ -1,0 +1,18 @@
+<div class="post">
+  <div class="post-header">
+    <div class="pull-left">
+      <a href="/posts/<%= @post.id %>"><%= @post.title %></a>
+    </div>
+    <div class="pull-right">
+      <small>Written by <%= @post.user.username %> on <%= @post.updated_at %></small>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+  <div class="post-body">
+    <%= raw(Earmark.to_html(@post.body)) %>
+  </div>
+  <div class="post-footer">
+
+  </div>
+</div>
+<br><br>

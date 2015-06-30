@@ -7,38 +7,69 @@
     <meta name="description" content="A blog for things about games and dev">
     <meta name="author" content="Brandon Richey">
 
-    <title>Some Blog or Something</title>
+    <title>Brandon Richey's Blog</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
   <body>
-    <div class="container">
-      <nav class="navbar">
-        <div class="container-fluid">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="#">Some Blog or Something</a>
-          </div>
-          <ul class="nav navbar-nav pull-right">
-            <%= if current_user(@conn) do %>
-              <li><p class="navbar-text">Welcome, <strong><%= current_user(@conn).username %></strong></p></li>
-              <li>
-                <%= link "Sign out", to: session_path(@conn, :delete, current_user(@conn)), method: :delete, class: "btn btn-default navbar-btn" %>
-              </li>
-            <% else %>
-              <li>
-                <%= link "Sign In", to: session_path(@conn, :new), class: "btn btn-default navbar-btn" %>
-              </li>
-            <% end %>
-          </ul>
-        </div>
-      </nav>
+    <div class="navbar navbar-default navbar-static-top">
+      <!-- Login Menu -->
+      <ul class="nav navbar-nav nav-pills navbar-right">
+        <%= if current_user(@conn) do %>
+          <li><p class="navbar-text">Welcome, <%= link current_user(@conn).username, to: user_path(@conn, :edit, current_user(@conn)) %></p></li>
+          <li><%= link "Sign out", to: session_path(@conn, :delete, current_user(@conn)), method: :delete, class: "btn btn-primary navbar-btn" %></li>
+          <li>&nbsp;&nbsp;</li>
+        <% else %>
+          <li>
+            <form>
+              <%= link "Sign In", to: session_path(@conn, :new), class: "btn btn-primary navbar-btn" %>
+            </form>
+          </li>
+          <li>&nbsp;&nbsp;</li>
+        <% end %>
+      </ul>
 
-      <hr>
+      <!-- Logo -->
+      <%= link "brandonrichey.com", to: page_path(@conn, :index), class: "navbar-brand" %>
+      <!-- Navigation -->
+      <ul class="nav navbar-nav nav-pills">
+        <li><%= link "Archive", to: post_path(@conn, :index) %></li>
+        <li><a href="#">Projects</a></li>
+        <li><a href="#">Résumé</a></li>
+      </ul>
+    </div>
+    <div class="container-fluid">
 
       <p class="alert alert-info"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger"><%= get_flash(@conn, :error) %></p>
 
-      <%= @inner %>
+      <div class="row">
+        <div class="col-lg-8">
+          <%= @inner %>
+        </div>
+
+        <div class="col-lg-3 col-lg-offset-1">
+          <div>
+            <div class="text-center">
+              <h4 class="lead">About</h4>
+            </div>
+            <hr>
+            <p>
+              <%= Pxblog.Repo.one(Pxblog.User).profile |> Earmark.to_html |> raw %>
+            </p>
+            <br>
+            <div class="text-center">
+              <h4 class="lead">Links</h4>
+            </div>
+            <hr>
+            <ul class="list-unstyled">
+              <li><a href="https://twitter.com/diamondgfx">Twitter</a></li>
+              <li><a href="http://elixir-lang.org">Elixir Language</a></li>
+              <li><a href="http://phoenixframework.org">Phoenix Web Framework</a></li>
+              <li><a href="http://rubyonrails.org">Ruby on Rails</a></li>
+            </ul>
+        </div>
+      </div>
 
     </div> <!-- /container -->
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>

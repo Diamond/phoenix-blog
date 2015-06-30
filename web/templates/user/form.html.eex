@@ -31,6 +31,11 @@
   </div>
 
   <div class="form-group">
+    <label>Profile</label>
+    <%= textarea f, :profile, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
     <%= submit "Submit", class: "btn btn-primary" %>
   </div>
 <% end %>

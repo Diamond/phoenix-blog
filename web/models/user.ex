@@ -2,7 +2,6 @@ defmodule Pxblog.User do
   use Pxblog.Web, :model
   import Comeonin.Bcrypt, only: [hashpwsalt: 1]
   import Ecto.Query
-  import IEx
 
   schema "users" do
     has_many :posts, Pxblog.Post
@@ -12,11 +11,12 @@ defmodule Pxblog.User do
     field :password_digest, :string
     field :password, :string, virtual: true
     field :password_confirmation, :string, virtual: true
+    field :profile, :string
 
     timestamps
   end
 
-  @required_fields ~w(username email password password_confirmation)
+  @required_fields ~w(username email password password_confirmation profile)
   @optional_fields ~w()
 
   @doc """
