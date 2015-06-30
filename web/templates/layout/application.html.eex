@@ -34,7 +34,7 @@
       <!-- Navigation -->
       <ul class="nav navbar-nav nav-pills">
         <li><%= link "Archive", to: post_path(@conn, :index) %></li>
-        <li><a href="#">Projects</a></li>
+        <li><%= link "Projects", to: project_path(@conn, :index) %></li>
         <li><a href="#">Résumé</a></li>
       </ul>
     </div>

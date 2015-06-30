@@ -16,8 +16,13 @@
   </div>
 
   <div class="form-group">
-    <label>Body</label>
-    <%= textarea f, :body, class: "form-control post-body-edit" %>
+    <label>Url</label>
+    <%= text_input f, :url, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <label>Description</label>
+    <%= textarea f, :description, class: "form-control" %>
   </div>
 
   <div class="form-group">

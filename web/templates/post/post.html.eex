@@ -1,18 +1,14 @@
 <div class="post">
   <div class="post-header">
-    <div class="pull-left">
-      <a href="/posts/<%= @post.id %>"><%= @post.title %></a>
-    </div>
-    <div class="pull-right">
-      <small>Written by <%= @post.user.username %> on <%= @post.updated_at %></small>
-    </div>
-    <div class="clearfix"></div>
+    <a href="/posts/<%= @post.id %>"><h4 class="lead"><%= @post.title %></h4></a>
+    <small>Written by <%= link @post.user.username, to: user_post_path(@conn, :index, @post.user) %> on <%= @post.updated_at %></small>
   </div>
   <div class="post-body">
-    <%= raw(Earmark.to_html(@post.body)) %>
-  </div>
-  <div class="post-footer">
-
+    <br>
+    <%= @post.body |> Earmark.to_html |> String.slice(0, 200) |> raw %>
+    <%= if String.length(@post.body) > 200 do %>
+    ... <%= link "(More)", to: post_path(@conn, :show, @post) %>
+    <% end %>
   </div>
 </div>
 <br><br>

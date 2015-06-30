@@ -1,0 +1,22 @@
+<h2>Show project</h2>
+
+<ul>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @project.title %>
+  </li>
+
+  <li>
+    <strong>Url:</strong>
+    <%= @project.url %>
+  </li>
+
+  <li>
+    <strong>Description:</strong>
+    <%= @project.description %>
+  </li>
+
+</ul>
+
+<%= link "Back", to: project_path(@conn, :index) %>

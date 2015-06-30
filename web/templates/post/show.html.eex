@@ -1,15 +1,18 @@
 <div class="container">
   <div class="row">
-    <div class="col-sm-4">
+    <div class="col-sm-8">
       <p class="lead"><%= @post.title %></p>
-    </div>
-    <div class="col-sm-4">
-      <p><%= @post.user.username %></p>
+      <hr>
     </div>
   </div>
   <div class="row">
     <div class="col-sm-8">
       <%= raw(Earmark.to_html(@post.body)) %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-8">
+      <small>Written by <%= @post.user.username %> on <%= @post.updated_at %></small>
     </div>
   </div>
   <br><br>

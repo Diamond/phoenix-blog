@@ -1,0 +1,32 @@
+<h2>Listing projects</h2>
+
+<table class="table table-condensed table-striped">
+  <thead>
+    <tr>
+      <th>Project Name</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for project <- @projects do %>
+    <tr>
+      <td><%= link project.title, to: project.url %></td>
+      <td class="text-right">
+        <%= if @conn.assigns[:current_user] do %>
+          <%= link "Show", to: project_path(@conn, :show, project), class: "btn btn-default btn-xs" %>
+          <%= link "Edit", to: project_path(@conn, :edit, project), class: "btn btn-default btn-xs" %>
+          <%= link "Delete", to: project_path(@conn, :delete, project), method: :delete, class: "btn btn-danger btn-xs" %>
+        <% end %>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="99">
+        <%= project.description |> Earmark.to_html |> raw %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New project", to: project_path(@conn, :new) %>
