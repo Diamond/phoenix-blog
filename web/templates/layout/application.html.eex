@@ -30,7 +30,7 @@
       </ul>
 
       <!-- Logo -->
-      <%= link "brandonrichey.com", to: page_path(@conn, :index), class: "navbar-brand" %>
+      <%= link "brandonrichey.com", to: page_path(@conn, :index), class: "navbar-brand br-logo" %>
       <!-- Navigation -->
       <ul class="nav navbar-nav nav-pills">
         <li><%= link "Archive", to: post_path(@conn, :index) %></li>

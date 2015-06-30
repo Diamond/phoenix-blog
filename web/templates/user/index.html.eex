@@ -5,7 +5,6 @@
     <tr>
       <th>Username</th>
       <th>Email</th>
-      <th>PasswordDigest</th>
 
       <th></th>
     </tr>
@@ -15,16 +14,19 @@
     <tr>
       <td><%= user.username %></td>
       <td><%= user.email %></td>
-      <td><%= user.password_digest %></td>
 
       <td class="text-right">
-        <%= link "Show", to: user_path(@conn, :show, user), class: "btn btn-default btn-xs" %>
-        <%= link "Edit", to: user_path(@conn, :edit, user), class: "btn btn-default btn-xs" %>
-        <%= link "Delete", to: user_path(@conn, :delete, user), method: :delete, class: "btn btn-danger btn-xs" %>
+        <%= if @conn.assigns[:current_user] do %>
+          <%= link "Show", to: user_path(@conn, :show, user), class: "btn btn-default btn-xs" %>
+          <%= link "Edit", to: user_path(@conn, :edit, user), class: "btn btn-default btn-xs" %>
+          <%= link "Delete", to: user_path(@conn, :delete, user), method: :delete, class: "btn btn-danger btn-xs" %>
+        <% end %>
       </td>
     </tr>
 <% end %>
   </tbody>
 </table>
 
-<%= link "New user", to: user_path(@conn, :new) %>
+<%= if @conn.assigns[:current_user] do %>
+  <%= link "New user", to: user_path(@conn, :new) %>
+<% end %>

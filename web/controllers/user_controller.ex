@@ -3,6 +3,7 @@ defmodule Pxblog.UserController do
 
   alias Pxblog.User
 
+  plug :check_permissions
   plug :scrub_params, "user" when action in [:create, :update]
   plug :action
 
@@ -63,5 +64,16 @@ defmodule Pxblog.UserController do
     conn
     |> put_flash(:info, "User deleted successfully.")
     |> redirect(to: user_path(conn, :index))
+  end
+
+  defp check_permissions(conn, _params) do
+    if conn.assigns[:current_user] do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You must be logged in to do that!")
+      |> redirect(to: page_path(conn, :index))
+      |> halt
+    end
   end
 end

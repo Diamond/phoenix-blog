@@ -1,6 +1,6 @@
-<h2>Listing posts</h2>
+<h2>Post Archive</h2>
 
-<table class="table">
+<table class="table table-condensed">
   <thead>
     <tr>
       <th>Title</th>
@@ -12,7 +12,9 @@
   <tbody>
 <%= for post <- @posts do %>
     <tr>
-      <td><%= post.title %></td>
+      <td>
+        <%= link post.title, to: post_path(@conn, :show, post) %>
+      </td>
       <td><%= post.updated_at %></td>
       <td><%= link post.user.username, to: user_post_path(@conn, :index, post.user.id) %></td>
 
