@@ -4,8 +4,7 @@ defmodule Pxblog.PostController do
   alias Pxblog.Post
   alias Pxblog.User
 
-  import IEx
-
+  plug :check_permissions when action in [:new, :create, :edit, :update]
   plug :scrub_params, "post" when action in [:create, :update]
   plug :action
 
@@ -82,5 +81,16 @@ defmodule Pxblog.PostController do
     conn
     |> put_flash(:info, "Post deleted successfully.")
     |> redirect(to: post_path(conn, :index))
+  end
+
+  defp check_permissions(conn, _params) do
+    if conn.assigns[:current_user] do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You must be logged in to do that!")
+      |> redirect(to: page_path(conn, :index))
+      |> halt
+    end
   end
 end
