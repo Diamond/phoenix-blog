@@ -6,8 +6,23 @@ defmodule Pxblog.ProjectController do
   plug :scrub_params, "project" when action in [:create, :update]
   plug :action
 
+  def index(conn, %{"user_id" => user_id}) do
+    if Repo.get User, user_id do
+      projects = user_id
+      |> Project.for_user
+      |> Repo.all
+      render(conn, "index.html", projects: projects)
+    else
+      conn
+      |> put_flash(:error, "Invalid user specified!")
+      |> redirect(to: page_path(conn, :index))
+    end
+  end
+
   def index(conn, _params) do
-    projects = Repo.all(Project)
+    projects = Repo.all from p in Project,
+      order_by: [desc: p.updated_at],
+      preload: [:user]
     render(conn, "index.html", projects: projects)
   end
 
@@ -17,7 +32,8 @@ defmodule Pxblog.ProjectController do
   end
 
   def create(conn, %{"project" => project_params}) do
-    changeset = Project.changeset(%Project{}, project_params)
+    new_project = build(get_session(conn, :current_user), :projects)
+    changeset = Project.changeset(new_project, project_params)
 
     if changeset.valid? do
       Repo.insert(changeset)
@@ -63,5 +79,16 @@ defmodule Pxblog.ProjectController do
     conn
     |> put_flash(:info, "Project deleted successfully.")
     |> redirect(to: project_path(conn, :index))
+  end
+
+  defp check_permissions(conn, _params) do
+    if conn.assigns[:current_user] do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You must be logged in to do that!")
+      |> redirect(to: page_path(conn, :index))
+      |> halt
+    end
   end
 end

@@ -5,13 +5,14 @@ defmodule Pxblog.User do
 
   schema "users" do
     has_many :posts, Pxblog.Post
+    has_many :projects, Pxblog.Project
 
     field :username, :string
     field :email, :string
     field :password_digest, :string
+    field :profile, :string
     field :password, :string, virtual: true
     field :password_confirmation, :string, virtual: true
-    field :profile, :string
 
     timestamps
   end
