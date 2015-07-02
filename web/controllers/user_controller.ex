@@ -5,8 +5,7 @@ defmodule Pxblog.UserController do
 
   plug :check_permissions
   plug :scrub_params, "user" when action in [:create, :update]
-  plug :action
-
+  
   def index(conn, _params) do
     users = Repo.all(User)
     render(conn, "index.html", users: users)

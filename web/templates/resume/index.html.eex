@@ -29,4 +29,6 @@
   </tbody>
 </table>
 
-<%= link "New resume", to: resume_path(@conn, :new) %>
+<%= if @conn.assigns[:current_user] do %>
+  <%= link "New resume", to: resume_path(@conn, :new) %>
+<% end %>
