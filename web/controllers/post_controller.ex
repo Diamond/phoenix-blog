@@ -6,7 +6,6 @@ defmodule Pxblog.PostController do
 
   plug :check_permissions when action in [:new, :create, :edit, :update]
   plug :scrub_params, "post" when action in [:create, :update]
-  plug :action
 
   def index(conn, %{"user_id" => user_id}) do
     if Repo.get User, user_id do

@@ -3,7 +3,6 @@ defmodule Pxblog.SessionController do
   alias Pxblog.User
   import Comeonin.Bcrypt, only: [checkpw: 2]
 
-  plug :action
   plug :scrub_params, "user" when action in [:create]
 
   def new(conn, _params) do
