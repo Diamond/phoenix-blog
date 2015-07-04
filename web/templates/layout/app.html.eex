@@ -14,7 +14,7 @@
   <body>
     <div class="navbar navbar-default navbar-static-top">
       <!-- Login Menu -->
-      <ul class="nav navbar-nav nav-pills navbar-right">
+      <ul class="nav navbar-nav nav-pills navbar-right hidden-xs">
         <%= if current_user(@conn) do %>
           <li><p class="navbar-text">Welcome, <%= link current_user(@conn).username, to: user_path(@conn, :edit, current_user(@conn)) %></p></li>
           <li><%= link "Sign out", to: session_path(@conn, :delete, current_user(@conn)), method: :delete, class: "btn btn-primary navbar-btn" %></li>
@@ -39,12 +39,22 @@
       </ul>
     </div>
     <div class="container-fluid">
+      <div class="row well well-sm visible-xs text-center">
+        <%= if current_user(@conn) do %>
+          Welcome, <%= link current_user(@conn).username, to: user_path(@conn, :edit, current_user(@conn)) %>
+          &nbsp;&nbsp;|&nbsp;&nbsp;
+          <%= link "Sign out", to: session_path(@conn, :delete, current_user(@conn)), method: :delete %>
+        <% else %>
+          <%= link "Sign In", to: session_path(@conn, :new)   %>
+        <% end %>
+      </div>
+
 
       <p class="alert alert-info"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger"><%= get_flash(@conn, :error) %></p>
 
       <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-8 col-xs-12">
           <%= @inner %>
         </div>
 
@@ -55,7 +65,14 @@
             </div>
             <hr>
             <p>
-              <%= Pxblog.Repo.one(Pxblog.User).profile |> Earmark.to_html |> raw %>
+              I am a web developer, hobbyist game developer, artist, and gamer
+              located in downstate NY! In my free time, when not spending time
+              with my wife, daughters, and dog, I’m learning new technologies
+              and programming techniques and design patterns, working on various
+              coding pet projects.
+            </p>
+            <p>
+              Currently, I’m focused on learning Elixir and Phoenix!
             </p>
             <br>
             <div class="text-center">
@@ -63,6 +80,7 @@
             </div>
             <hr>
             <ul class="list-unstyled">
+              <li><a href="https://github.com/Diamond">My Github</a></li>
               <li><a href="https://twitter.com/diamondgfx">Twitter</a></li>
               <li><a href="http://elixir-lang.org">Elixir Language</a></li>
               <li><a href="http://phoenixframework.org">Phoenix Web Framework</a></li>

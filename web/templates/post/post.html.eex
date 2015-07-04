@@ -5,10 +5,7 @@
   </div>
   <div class="post-body">
     <br>
-    <%= @post.body |> Earmark.to_html |> String.slice(0, 200) |> raw %>
-    <%= if String.length(@post.body) > 200 do %>
-    ... <%= link "(More)", to: post_path(@conn, :show, @post) %>
-    <% end %>
+    <%= @post.body |> Earmark.to_html |> raw %>
   </div>
 </div>
 <br><br>
