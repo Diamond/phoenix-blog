@@ -13,7 +13,7 @@ use Mix.Config
 # which you typically run after static files are built.
 config :pxblog, Pxblog.Endpoint,
   http: [port: {:system, "PORT"}],
-  url: [host: "example.com"],
+  url: [host: "brandonrichey.com"],
   cache_static_manifest: "priv/static/manifest.json"
 
 # ## SSL Support
