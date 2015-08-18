@@ -32,4 +32,4 @@ config :pxblog, Pxblog.Repo,
   username: "postgres",
   password: "postgres",
   database: "pxblog_dev",
-  size: 10 # The amount of database connections in the pool
+  pool_size: 10 # The amount of database connections in the pool
