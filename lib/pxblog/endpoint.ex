@@ -31,5 +31,5 @@ defmodule Pxblog.Endpoint do
     key: "_pxblog_key",
     signing_salt: "eNXk2ti1"
 
-  plug :router, Pxblog.Router
+  plug Pxblog.Router
 end
