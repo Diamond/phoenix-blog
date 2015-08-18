@@ -29,7 +29,7 @@ defmodule Pxblog.Mixfile do
   #
   # Type `mix help deps` for examples and options
   defp deps do
-    [{:phoenix, "~> 0.15"},
+    [{:phoenix, "~> 0.16"},
      {:phoenix_ecto, "~> 0.4"},
      {:postgrex, ">= 0.0.0"},
      {:phoenix_html, "~> 1.1"},
