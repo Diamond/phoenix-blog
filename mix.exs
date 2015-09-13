@@ -3,7 +3,7 @@ defmodule Pxblog.Mixfile do
 
   def project do
     [app: :pxblog,
-     version: "0.0.1",
+     version: "0.2.0",
      elixir: "~> 1.0",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix] ++ Mix.compilers,
@@ -29,13 +29,14 @@ defmodule Pxblog.Mixfile do
   #
   # Type `mix help deps` for examples and options
   defp deps do
-    [{:phoenix, "~> 0.16"},
-     {:phoenix_ecto, "~> 0.4"},
+    [{:phoenix, "~> 1.0.2"},
+     {:phoenix_ecto, "~> 1.1"},
      {:postgrex, ">= 0.0.0"},
-     {:phoenix_html, "~> 1.1"},
-     {:phoenix_live_reload, "~> 0.4", only: :dev},
+     {:phoenix_html, "~> 2.1"},
+     {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:cowboy, "~> 1.0"},
      {:comeonin, "~> 1.0"},
-     {:earmark, "~> 0.1.8"}]
+     {:earmark, "~> 0.1.8"}
+   ]
   end
 end

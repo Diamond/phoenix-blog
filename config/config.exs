@@ -9,8 +9,8 @@ use Mix.Config
 config :pxblog, Pxblog.Endpoint,
   url: [host: "localhost"],
   root: Path.dirname(__DIR__),
-  secret_key_base: "lCnIJHi0Y+H20s4RzY4hDwozhYTpSUX20qb8EiENE7HEIihADlrXBPUvN0QJ+ake",
-  debug_errors: false,
+  secret_key_base: "BCprul9O4mxIh3y2vz/yYvEk17SMAwotwsAy2Zxdc9s8aRZyCuPpUYC0Y8CLEE/I",
+  render_errors: [accepts: ~w(html json)],
   pubsub: [name: Pxblog.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
@@ -22,3 +22,8 @@ config :logger, :console,
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
+
+# Configure phoenix generators
+config :phoenix, :generators,
+  migration: true,
+  binary_id: false
